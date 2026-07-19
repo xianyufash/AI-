@@ -8,14 +8,16 @@
 - **AI 文章撰写**: 根据选定选题生成技术文章
 - **Human-in-the-loop**: 支持人工介入的选题和审稿机制
 - **配图生成**: 自动提取视觉要点并生成配图
-- **状态持久化**: 使用 PostgreSQL 持久化工作流状态
+- **状态持久化与断点恢复**: 使用 PostgreSQL Checkpointer 保存任务状态，支持人工审核暂停后继续执行
 
 ## 技术栈
 
 - **Python 3.10+**
 - **FastAPI** - 异步 Web 框架
 - **LangGraph 1.0+** - 工作流编排
+- **LangGraph PostgreSQL Checkpointer** - 基于 `AsyncPostgresSaver` 保存 Checkpoint，实现任务断点恢复与 Human-in-the-loop
 - **PostgreSQL** - 数据持久化
+- **Psycopg 3** - Checkpointer 异步连接池与 PostgreSQL 驱动
 - **SQLAlchemy** - 异步 ORM
 - **Pydantic** - 数据验证
 
