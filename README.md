@@ -1,6 +1,6 @@
-# AI 内容运营助手 - 后端服务
+# AI 内容运营助手
 
-基于 LangGraph 1.0+ 和 FastAPI 构建的自动化内容生成工作流服务。
+基于 Vue 3、FastAPI 与 LangGraph 构建的 AI 内容创作工作台，覆盖选题、文案、人工审核、智能配图和发布包导出全流程。
 
 ## 功能特性
 
@@ -12,14 +12,66 @@
 
 ## 技术栈
 
-- **Python 3.10+**
-- **FastAPI** - 异步 Web 框架
-- **LangGraph 1.0+** - 工作流编排
-- **LangGraph PostgreSQL Checkpointer** - 基于 `AsyncPostgresSaver` 保存 Checkpoint，实现任务断点恢复与 Human-in-the-loop
-- **PostgreSQL** - 数据持久化
-- **Psycopg 3** - Checkpointer 异步连接池与 PostgreSQL 驱动
-- **SQLAlchemy** - 异步 ORM
-- **Pydantic** - 数据验证
+### 前端
+
+| 技术 | 用途 |
+| --- | --- |
+| **Vue 3.4+** | Composition API 驱动的单页工作台 |
+| **Vite 5** | 本地开发、代理与生产构建 |
+| **Tailwind CSS 4** | 响应式界面与组件样式 |
+| **CVA / clsx / tailwind-merge** | 可复用 UI 组件与样式类合并 |
+| **Axios** | 登录、工作流、历史任务与发布包接口请求 |
+| **Server-Sent Events（SSE）** | 实时展示选题、写稿和配图生成进度 |
+
+### 后端与接口
+
+| 技术 | 用途 |
+| --- | --- |
+| **Python 3.10+** | 后端运行环境 |
+| **FastAPI 0.128+** | 异步 REST API、SSE 流式响应与静态资源服务 |
+| **Uvicorn 0.40+** | ASGI 开发与运行服务器 |
+| **Pydantic 2 / Pydantic Settings** | 请求校验、数据模型与环境变量配置 |
+| **python-dotenv** | 加载本地 `.env` 运行配置 |
+| **HTTPX** | 异步调用图片生成服务与下载远程图片 |
+| **Pillow** | 图片保存、处理与本地兜底图生成 |
+
+### Agent 工作流与状态恢复
+
+| 技术 | 用途 |
+| --- | --- |
+| **LangGraph 1.0+** | 选题、写稿、审稿、视觉提取和配图节点编排 |
+| **LangChain / LangChain OpenAI** | 模型消息、流式输出、回调和 OpenAI 兼容接口封装 |
+| **Human-in-the-loop** | 使用 `interrupt()` 与 `Command` 实现选题、文案和配图人工审核 |
+| **langgraph-checkpoint-postgres 3.0+** | PostgreSQL Checkpoint 持久化 |
+| **AsyncPostgresSaver** | 保存每个任务状态，支持暂停、恢复、历史查询和断点续跑 |
+
+### 数据库与安全
+
+| 技术 | 用途 |
+| --- | --- |
+| **PostgreSQL** | 用户、工作流状态和 Checkpoint 数据存储 |
+| **SQLAlchemy 2 AsyncIO** | 用户数据异步 ORM |
+| **AsyncPG** | SQLAlchemy PostgreSQL 异步驱动 |
+| **Psycopg 3 / psycopg-pool** | Checkpointer 异步连接池与原生查询 |
+| **JWT（python-jose）** | 用户身份认证与接口权限控制 |
+| **Argon2 / Passlib / Bcrypt** | 密码哈希与兼容验证 |
+
+### AI 与图片服务
+
+| 服务 | 用途 |
+| --- | --- |
+| **阿里百炼 OpenAI 兼容接口** | 选题、文章和视觉 brief 生成 |
+| **Qwen Plus / Qwen Turbo** | 标准写作模型与快速提取模型，可通过环境变量替换 |
+| **火山方舟图片生成 API** | 根据正文和差异化视觉角色生成三张配套图 |
+| **Doubao Seedream 4.5** | 默认图片模型，可通过 `IMAGE_MODEL` 替换 |
+
+### 可观测性与交付
+
+| 技术 | 用途 |
+| --- | --- |
+| **Structlog** | 结构化日志、请求链路与节点耗时记录 |
+| **PII 脱敏处理器** | 对日志中的邮箱、手机号和密钥等信息进行脱敏 |
+| **ZIP / Markdown 导出** | 一键导出标题、文案、标签、配图与发布清单 |
 
 ## 快速开始
 
